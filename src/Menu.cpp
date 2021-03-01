@@ -3,6 +3,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include "../assets/menu/menuAtlas.png.h"
+#include "../assets/menu/menuBackground.png.h"
 
 #define TOTAL_SELECTIONS 3
 #define SELECTION_NONE      0
@@ -26,8 +27,10 @@
 #define MAIN_SELECTIONS_CURRENT_TOP_Y(SELECTION)    (vertices[5] - (SELECTION - 1) * MAIN_SELECTIONS_DISTANCE)
 #define MAIN_SELECTIONS_CURRENT_BOTTOM_Y(SELECTION) (vertices[1] - (SELECTION - 1) * MAIN_SELECTIONS_DISTANCE)
 
-#define LOGO_INIT_LEFT_X -0.75f
-#define LOGO_INIT_RIGHT_X 0.75f
+#define LOGO_INIT_LEFT_X  -0.75f
+#define LOGO_INIT_RIGHT_X  0.75f
+#define LOGO_INIT_TOP_Y    0.9f
+#define LOGO_INIT_BOTTOM_Y 0.5f
 #define LOGO_CURRENT_LEFT_X   (vertices[4 * 4 * TOTAL_SELECTIONS])
 #define LOGO_CURRENT_RIGHT_X  (vertices[4 * 4 * TOTAL_SELECTIONS + 8])
 #define LOGO_CURRENT_BOTTOM_Y (vertices[4 * 4 * TOTAL_SELECTIONS + 1])
@@ -77,7 +80,7 @@ inline std::vector<float> vertexPositions(float aspectRatio)
 {
     return
     {
-        /* X                          Y                                                        U     V     */
+        /* X                          Y                                                        U                                                       V     */
         // Start game
         MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_BOTTOM_Y,                                getTexCoordX(SELECTION_PLAY_GAME, CORNER_BOTTOM_LEFT),  getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_LEFT),
         MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_TOP_Y,                                   getTexCoordX(SELECTION_PLAY_GAME, CORNER_TOP_LEFT),     getTexCoordY(SELECTION_PLAY_GAME, CORNER_TOP_LEFT),
@@ -85,33 +88,40 @@ inline std::vector<float> vertexPositions(float aspectRatio)
         MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y,                                getTexCoordX(SELECTION_PLAY_GAME, CORNER_BOTTOM_RIGHT), getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_RIGHT),
 
         // Options
-        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_BOTTOM_Y - 1 * MAIN_SELECTIONS_DISTANCE, 0.0f, 0.0f,
-        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_TOP_Y - 1 * MAIN_SELECTIONS_DISTANCE,    0.0f, 1.0f,
-        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_TOP_Y - 1 * MAIN_SELECTIONS_DISTANCE,    1.0f, 1.0f,
-        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y - 1 * MAIN_SELECTIONS_DISTANCE, 1.0f, 0.0f,
+        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_BOTTOM_Y - 1 * MAIN_SELECTIONS_DISTANCE, getTexCoordX(SELECTION_OPTIONS, CORNER_BOTTOM_LEFT),  getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_LEFT),
+        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_TOP_Y - 1 * MAIN_SELECTIONS_DISTANCE,    getTexCoordX(SELECTION_OPTIONS, CORNER_TOP_LEFT),     getTexCoordY(SELECTION_PLAY_GAME, CORNER_TOP_LEFT),
+        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_TOP_Y - 1 * MAIN_SELECTIONS_DISTANCE,    getTexCoordX(SELECTION_OPTIONS, CORNER_TOP_RIGHT),    getTexCoordY(SELECTION_PLAY_GAME, CORNER_TOP_RIGHT),
+        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y - 1 * MAIN_SELECTIONS_DISTANCE, getTexCoordX(SELECTION_OPTIONS, CORNER_BOTTOM_RIGHT), getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_RIGHT),
 
         // Quit game
-        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_BOTTOM_Y - 2 * MAIN_SELECTIONS_DISTANCE, 0.0f, 0.0f,
-        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_TOP_Y - 2 * MAIN_SELECTIONS_DISTANCE,    0.0f, 1.0f,
-        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_TOP_Y - 2 * MAIN_SELECTIONS_DISTANCE,    1.0f, 1.0f,
-        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y - 2 * MAIN_SELECTIONS_DISTANCE, 1.0f, 0.0f,
+        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_BOTTOM_Y - 2 * MAIN_SELECTIONS_DISTANCE, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_LEFT),  getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_LEFT),
+        MAIN_SELECTIONS_INIT_LEFT_X,  MAIN_SELECTIONS_TOP_Y - 2 * MAIN_SELECTIONS_DISTANCE,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_LEFT),     getTexCoordY(SELECTION_PLAY_GAME, CORNER_TOP_LEFT),
+        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_TOP_Y - 2 * MAIN_SELECTIONS_DISTANCE,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_RIGHT),    getTexCoordY(SELECTION_PLAY_GAME, CORNER_TOP_RIGHT),
+        MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y - 2 * MAIN_SELECTIONS_DISTANCE, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_RIGHT), getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_RIGHT),
 
         // Logo
-        -0.75f, 0.5f, 0.0f, 0.0f,
-        -0.75f, 0.9f, 0.0f, 1.0f,
-         0.75f, 0.9f, 1.0f, 1.0f,
-         0.75f, 0.5f, 1.0f, 0.0f
+        LOGO_INIT_LEFT_X,  LOGO_INIT_BOTTOM_Y, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_LEFT),  getTexCoordY(LOGO, CORNER_BOTTOM_LEFT),
+        LOGO_INIT_LEFT_X,  LOGO_INIT_TOP_Y,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_LEFT),     getTexCoordY(LOGO, CORNER_TOP_LEFT),
+        LOGO_INIT_RIGHT_X, LOGO_INIT_TOP_Y,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_RIGHT),    getTexCoordY(LOGO, CORNER_TOP_RIGHT),
+        LOGO_INIT_RIGHT_X, LOGO_INIT_BOTTOM_Y, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_RIGHT), getTexCoordY(LOGO, CORNER_BOTTOM_RIGHT)
     };
 }
 
 Menu::Menu(PT::Input* p_Inputs)
     : shader(PT_SHADER_XYUV_M),
-      vertices(vertexPositions(1.0f)), vbo(vertices), ibo(PT::tIndsSquares<unsigned char>(vertices.size() / 8)), p_Inputs(p_Inputs),
-      tex_menuAtlas(MENU_ATLAS_LENGTH, MENU_ATLAS, 0),
+      vertices(vertexPositions(1.0f)), vbo(vertices), ibo(PT::tIndsSquares<unsigned char>(vertices.size() / 8)),
+      backgroundVbo(std::vector<float>({
+        -2.0f, -1.0f, 0.0f, 0.0f,
+        -2.0f,  1.0f, 0.0f, 1.0f,
+         2.0f,  1.0f, 1.0f, 1.0f,
+         2.0f, -1.0f, 1.0f, 0.0f
+      })), backgroundIbo(PT::tIndsSquares<unsigned char>(1)), p_Inputs(p_Inputs),
+      tex_menuAtlas(MENU_ATLAS_LENGTH, MENU_ATLAS, 0), tex_menuBackground(MENU_BACKGROUND_LENGTH, MENU_BACKGROUND, 1),
       aspectRatio(1.0f), state(MAIN_SCREEN), nextState(NONE), deltaTime(0.0f), animationPlaying(false)
 
 {
     vao.addBuffer(vbo, shader.getLayout());
+    backgroundVao.addBuffer(backgroundVbo, shader.getLayout());
     //GLEC(glClearColor(0.265625f, 0.4375f, 0.3203125f, 1.0f));
     glm::mat4 scaleMat = glm::scale(glm::vec3(1.0f / aspectRatio, 1.0f, 1.0f));
     shader.setUniformMat4f("u_Mat", scaleMat);
@@ -188,6 +198,9 @@ void Menu::update(float deltaTime)
             break;
     }
 
+    shader.setUniform1i("texSlot", 1);
+    PT::drawVA(backgroundVao, backgroundIbo, shader);
+    shader.setUniform1i("texSlot", 0);
     PT::drawVA(vao, ibo, shader);
 }
 
@@ -197,7 +210,7 @@ unsigned int Menu::mouseOn()
         return SELECTION_NONE;
 
     double cursorX {(p_Inputs->mouseX / vp[2]  * 2 - 1) * aspectRatio};
-    double cursorY {(-p_Inputs->mouseY / vp[3]  * 2 + 1) * aspectRatio};
+    double cursorY {(-p_Inputs->mouseY / vp[3]  * 2 + 1)};
 
     for (unsigned int selection {1}; selection <= TOTAL_SELECTIONS; ++selection)
         if (cursorX > MAIN_SELECTIONS_CURRENT_LEFT_X && cursorX < MAIN_SELECTIONS_CURRENT_RIGHT_X &&
@@ -212,11 +225,11 @@ void Menu::animation_MoveOffscreen()
     animationPlaying = ANIMATION_MOVE_OFFSCREEN;
 
     if (!(MAIN_SELECTIONS_CURRENT_LEFT_X > aspectRatio + ANIMATION_DELAY))
-        for (long unsigned int i {0}; i < 4 * 4 * TOTAL_SELECTIONS; i += 2)
+        for (long unsigned int i {0}; i < 4 * 4 * TOTAL_SELECTIONS; i += 4)
             vertices[i] += 1.6f * deltaTime * aspectRatio;
 
     if (!(LOGO_CURRENT_RIGHT_X < -aspectRatio - ANIMATION_DELAY))
-        for (long unsigned int i {4 * 4 * TOTAL_SELECTIONS}; i < 4 * 4 * (TOTAL_SELECTIONS + 1); i += 2)
+        for (long unsigned int i {4 * 4 * TOTAL_SELECTIONS}; i < 4 * 4 * (TOTAL_SELECTIONS + 1); i += 4)
             vertices[i] -= 2.6f * deltaTime * aspectRatio;
 
     vbo.updateData(vertices);
@@ -233,11 +246,11 @@ void Menu::animation_MoveIn()
     animationPlaying = ANIMATION_MOVE_IN;
 
     if (!(MAIN_SELECTIONS_CURRENT_LEFT_X <= MAIN_SELECTIONS_INIT_LEFT_X))
-        for (long unsigned int i {0}; i < 4 * 4 * TOTAL_SELECTIONS; i += 2)
+        for (long unsigned int i {0}; i < 4 * 4 * TOTAL_SELECTIONS; i += 4)
             vertices[i] -= 1.6f * deltaTime * aspectRatio;
 
     if (!(LOGO_CURRENT_RIGHT_X >= LOGO_INIT_RIGHT_X))
-        for (long unsigned int i {4 * 4 * TOTAL_SELECTIONS}; i < 4 * 4 * (TOTAL_SELECTIONS + 1); i += 2)
+        for (long unsigned int i {4 * 4 * TOTAL_SELECTIONS}; i < 4 * 4 * (TOTAL_SELECTIONS + 1); i += 4)
             vertices[i] += 2.6f * deltaTime * aspectRatio;
 
     vbo.updateData(vertices);
@@ -291,4 +304,7 @@ Menu::~Menu()
     vao.remove();
     vbo.remove();
     ibo.remove();
+    backgroundVao.remove();
+    backgroundVbo.remove();
+    backgroundIbo.remove();
 }

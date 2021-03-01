@@ -8,6 +8,7 @@ int main()
 
     PT::Window window(cfg);
     PT::initGL(cfg);
+    GLEC(glDisable(GL_DEPTH_TEST));
     window.changeTitle("Gesneria");
 
     Application app(window.getInputs());

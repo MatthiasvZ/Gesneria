@@ -29,9 +29,13 @@ class Menu
         PT::VertexBuffer vbo;
         PT::IndexBuffer ibo;
         PT::VertexArray vao;
+        PT::VertexBuffer backgroundVbo;
+        PT::IndexBuffer backgroundIbo;
+        PT::VertexArray backgroundVao;
         PT::Input* p_Inputs;
 
         PT::Texture tex_menuAtlas;
+        PT::Texture tex_menuBackground;
 
         float vp[4];
         float aspectRatio;
