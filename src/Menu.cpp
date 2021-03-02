@@ -100,10 +100,10 @@ inline std::vector<float> vertexPositions(float aspectRatio)
         MAIN_SELECTIONS_INIT_RIGHT_X, MAIN_SELECTIONS_BOTTOM_Y - 2 * MAIN_SELECTIONS_DISTANCE, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_RIGHT), getTexCoordY(SELECTION_PLAY_GAME, CORNER_BOTTOM_RIGHT),
 
         // Logo
-        LOGO_INIT_LEFT_X,  LOGO_INIT_BOTTOM_Y, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_LEFT),  getTexCoordY(LOGO, CORNER_BOTTOM_LEFT),
-        LOGO_INIT_LEFT_X,  LOGO_INIT_TOP_Y,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_LEFT),     getTexCoordY(LOGO, CORNER_TOP_LEFT),
-        LOGO_INIT_RIGHT_X, LOGO_INIT_TOP_Y,    getTexCoordX(SELECTION_QUIT_GAME, CORNER_TOP_RIGHT),    getTexCoordY(LOGO, CORNER_TOP_RIGHT),
-        LOGO_INIT_RIGHT_X, LOGO_INIT_BOTTOM_Y, getTexCoordX(SELECTION_QUIT_GAME, CORNER_BOTTOM_RIGHT), getTexCoordY(LOGO, CORNER_BOTTOM_RIGHT)
+        LOGO_INIT_LEFT_X,  LOGO_INIT_BOTTOM_Y, getTexCoordX(LOGO, CORNER_BOTTOM_LEFT),  getTexCoordY(LOGO, CORNER_BOTTOM_LEFT),
+        LOGO_INIT_LEFT_X,  LOGO_INIT_TOP_Y,    getTexCoordX(LOGO, CORNER_TOP_LEFT),     getTexCoordY(LOGO, CORNER_TOP_LEFT),
+        LOGO_INIT_RIGHT_X, LOGO_INIT_TOP_Y,    getTexCoordX(LOGO, CORNER_TOP_RIGHT),    getTexCoordY(LOGO, CORNER_TOP_RIGHT),
+        LOGO_INIT_RIGHT_X, LOGO_INIT_BOTTOM_Y, getTexCoordX(LOGO, CORNER_BOTTOM_RIGHT), getTexCoordY(LOGO, CORNER_BOTTOM_RIGHT)
     };
 }
 
@@ -116,13 +116,13 @@ Menu::Menu(PT::Input* p_Inputs)
          2.0f,  1.0f, 1.0f, 1.0f,
          2.0f, -1.0f, 1.0f, 0.0f
       })), backgroundIbo(PT::tIndsSquares<unsigned char>(1)), p_Inputs(p_Inputs),
-      tex_menuAtlas(MENU_ATLAS_LENGTH, MENU_ATLAS, 0), tex_menuBackground(MENU_BACKGROUND_LENGTH, MENU_BACKGROUND, 1),
+      tex_menuAtlas(MENU_ATLAS_LENGTH, MENU_ATLAS, 0, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR), tex_menuBackground(MENU_BACKGROUND_LENGTH, MENU_BACKGROUND, 1),
       aspectRatio(1.0f), state(MAIN_SCREEN), nextState(NONE), deltaTime(0.0f), animationPlaying(false)
 
 {
     vao.addBuffer(vbo, shader.getLayout());
     backgroundVao.addBuffer(backgroundVbo, shader.getLayout());
-    //GLEC(glClearColor(0.265625f, 0.4375f, 0.3203125f, 1.0f));
+    GLEC(glClearColor(0.265625f, 0.4375f, 0.3203125f, 1.0f));
     glm::mat4 scaleMat = glm::scale(glm::vec3(1.0f / aspectRatio, 1.0f, 1.0f));
     shader.setUniformMat4f("u_Mat", scaleMat);
 }
@@ -199,7 +199,7 @@ void Menu::update(float deltaTime)
     }
 
     shader.setUniform1i("texSlot", 1);
-    PT::drawVA(backgroundVao, backgroundIbo, shader);
+    //PT::drawVA(backgroundVao, backgroundIbo, shader);
     shader.setUniform1i("texSlot", 0);
     PT::drawVA(vao, ibo, shader);
 }
