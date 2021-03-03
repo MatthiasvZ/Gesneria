@@ -18,7 +18,7 @@ LIBDIR =
 LIB = 
 LDFLAGS = -lopenal -lglfw -lGLEW -lX11 -lGLU -lGL -ldl -lpthread
 
-INC_DEBUG = $(INC) -Iinclude -Iinclude/stages/
+INC_DEBUG = $(INC) -Iinclude -Iinclude/stages/ -Iinclude/entities
 CFLAGS_DEBUG = $(CFLAGS) -g
 RESINC_DEBUG = $(RESINC)
 RCFLAGS_DEBUG = $(RCFLAGS)
@@ -29,7 +29,7 @@ OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/Gesneria
 
-INC_RELEASE = $(INC) -Iinclude -Iinclude/stages/
+INC_RELEASE = $(INC) -Iinclude -Iinclude/stages/ -Iinclude/entities
 CFLAGS_RELEASE = $(CFLAGS) -O3
 RESINC_RELEASE = $(RESINC)
 RCFLAGS_RELEASE = $(RCFLAGS)
@@ -40,9 +40,9 @@ OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
 OUT_RELEASE = bin/Release/Gesneria
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/Application.o $(OBJDIR_DEBUG)/src/Menu.o $(OBJDIR_DEBUG)/src/Stage.o $(OBJDIR_DEBUG)/src/stages/Stage1.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/Application.o $(OBJDIR_DEBUG)/src/Menu.o $(OBJDIR_DEBUG)/src/Stage.o $(OBJDIR_DEBUG)/src/entities/Entity.o $(OBJDIR_DEBUG)/src/entities/Player.o $(OBJDIR_DEBUG)/src/stages/Stage1.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/main.o $(OBJDIR_RELEASE)/src/Application.o $(OBJDIR_RELEASE)/src/Menu.o $(OBJDIR_RELEASE)/src/Stage.o $(OBJDIR_RELEASE)/src/stages/Stage1.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/main.o $(OBJDIR_RELEASE)/src/Application.o $(OBJDIR_RELEASE)/src/Menu.o $(OBJDIR_RELEASE)/src/Stage.o $(OBJDIR_RELEASE)/src/entities/Entity.o $(OBJDIR_RELEASE)/src/entities/Player.o $(OBJDIR_RELEASE)/src/stages/Stage1.o
 
 all: debug release
 
@@ -52,6 +52,7 @@ before_debug:
 	test -d bin/Debug || mkdir -p bin/Debug
 	test -d $(OBJDIR_DEBUG) || mkdir -p $(OBJDIR_DEBUG)
 	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
+	test -d $(OBJDIR_DEBUG)/src/entities || mkdir -p $(OBJDIR_DEBUG)/src/entities
 	test -d $(OBJDIR_DEBUG)/src/stages || mkdir -p $(OBJDIR_DEBUG)/src/stages
 
 after_debug: 
@@ -73,6 +74,12 @@ $(OBJDIR_DEBUG)/src/Menu.o: src/Menu.cpp
 $(OBJDIR_DEBUG)/src/Stage.o: src/Stage.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/Stage.cpp -o $(OBJDIR_DEBUG)/src/Stage.o
 
+$(OBJDIR_DEBUG)/src/entities/Entity.o: src/entities/Entity.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/entities/Entity.cpp -o $(OBJDIR_DEBUG)/src/entities/Entity.o
+
+$(OBJDIR_DEBUG)/src/entities/Player.o: src/entities/Player.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/entities/Player.cpp -o $(OBJDIR_DEBUG)/src/entities/Player.o
+
 $(OBJDIR_DEBUG)/src/stages/Stage1.o: src/stages/Stage1.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/stages/Stage1.cpp -o $(OBJDIR_DEBUG)/src/stages/Stage1.o
 
@@ -81,12 +88,14 @@ clean_debug:
 	rm -rf bin/Debug
 	rm -rf $(OBJDIR_DEBUG)
 	rm -rf $(OBJDIR_DEBUG)/src
+	rm -rf $(OBJDIR_DEBUG)/src/entities
 	rm -rf $(OBJDIR_DEBUG)/src/stages
 
 before_release: 
 	test -d bin/Release || mkdir -p bin/Release
 	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
 	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
+	test -d $(OBJDIR_RELEASE)/src/entities || mkdir -p $(OBJDIR_RELEASE)/src/entities
 	test -d $(OBJDIR_RELEASE)/src/stages || mkdir -p $(OBJDIR_RELEASE)/src/stages
 
 after_release: 
@@ -108,6 +117,12 @@ $(OBJDIR_RELEASE)/src/Menu.o: src/Menu.cpp
 $(OBJDIR_RELEASE)/src/Stage.o: src/Stage.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/Stage.cpp -o $(OBJDIR_RELEASE)/src/Stage.o
 
+$(OBJDIR_RELEASE)/src/entities/Entity.o: src/entities/Entity.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/entities/Entity.cpp -o $(OBJDIR_RELEASE)/src/entities/Entity.o
+
+$(OBJDIR_RELEASE)/src/entities/Player.o: src/entities/Player.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/entities/Player.cpp -o $(OBJDIR_RELEASE)/src/entities/Player.o
+
 $(OBJDIR_RELEASE)/src/stages/Stage1.o: src/stages/Stage1.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/stages/Stage1.cpp -o $(OBJDIR_RELEASE)/src/stages/Stage1.o
 
@@ -116,6 +131,7 @@ clean_release:
 	rm -rf bin/Release
 	rm -rf $(OBJDIR_RELEASE)
 	rm -rf $(OBJDIR_RELEASE)/src
+	rm -rf $(OBJDIR_RELEASE)/src/entities
 	rm -rf $(OBJDIR_RELEASE)/src/stages
 
 .PHONY: before_debug after_debug clean_debug before_release after_release clean_release

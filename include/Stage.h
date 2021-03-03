@@ -2,6 +2,7 @@
 #define STAGE_H
 
 #include "Petroleum.h"
+#include "Player.h"
 
 class Stage
 {
@@ -11,11 +12,12 @@ class Stage
         virtual ~Stage();
 
     protected:
+        Player player;
+
         PT::Shader shader;
-        std::vector<float> vertices;
-        PT::VertexBuffer vbo;
-        PT::IndexBuffer ibo;
-        PT::VertexArray vao;
+        PT::VertexBuffer playerVbo;
+        PT::IndexBuffer spriteIbo;
+        PT::VertexArray spriteVao;
         //PT::VertexBuffer backgroundVbo;
         //PT::IndexBuffer backgroundIbo;
         //PT::VertexArray backgroundVao;
@@ -23,7 +25,9 @@ class Stage
 
         unsigned int state;
         float deltaTime;
+        float aspectRatio;
 
+        void updatePositions();
         void draw();
 
     private:

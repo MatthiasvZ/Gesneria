@@ -107,6 +107,11 @@ inline std::vector<float> vertexPositions(float aspectRatio)
     };
 }
 
+// TODO remove
+#define MENU_BACKGROUND_LENGTH MENU_ATLAS_LENGTH
+#define MENU_BACKGROUND MENU_ATLAS
+
+
 Menu::Menu(PT::Input* p_Inputs)
     : shader(PT_SHADER_XYUV_M),
       vertices(vertexPositions(1.0f)), vbo(vertices), ibo(PT::tIndsSquares<unsigned char>(vertices.size() / 8)),

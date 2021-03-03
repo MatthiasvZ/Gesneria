@@ -7,7 +7,8 @@ Stage1::Stage1(PT::Input* p_Inputs) : Stage(p_Inputs)
 
 void Stage1::update(float deltaTime)
 {
-
+    this->deltaTime = deltaTime;
+    updatePositions();
     draw();
 }
 

@@ -15,6 +15,7 @@
 					<Add option="-g" />
 					<Add directory="include" />
 					<Add directory="include/stages/" />
+					<Add directory="include/entities" />
 				</Compiler>
 				<Linker>
 					<Add option="lib/libPetroleum.a.debug" />
@@ -29,6 +30,7 @@
 					<Add option="-O3" />
 					<Add directory="include" />
 					<Add directory="include/stages/" />
+					<Add directory="include/entities" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -54,11 +56,15 @@
 		<Unit filename="include/Application.h" />
 		<Unit filename="include/Menu.h" />
 		<Unit filename="include/Stage.h" />
+		<Unit filename="include/entities/Entity.h" />
+		<Unit filename="include/entities/Player.h" />
 		<Unit filename="include/stages/Stage1.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Application.cpp" />
 		<Unit filename="src/Menu.cpp" />
 		<Unit filename="src/Stage.cpp" />
+		<Unit filename="src/entities/Entity.cpp" />
+		<Unit filename="src/entities/Player.cpp" />
 		<Unit filename="src/stages/Stage1.cpp" />
 		<Extensions />
 	</Project>
