@@ -1,8 +1,8 @@
 #include "Application.h"
 #include "Stage1.h"
 
-Application::Application(PT::Input* p_Inputs)
-    : p_Inputs(p_Inputs), state(APP_STATE_MENU), menu(p_Inputs)
+Application::Application(PT::Window* p_Window)
+    : p_Window(p_Window), state(APP_STATE_MENU), menu(p_Window), stage(nullptr)
 {
     //ctor
 }
@@ -25,7 +25,7 @@ void Application::update(float deltaTime)
             break;
 
         case APP_STATE_LOADING_STAGE_1:
-            stage = new Stage1(p_Inputs);
+            stage = new Stage1(p_Window);
             state = APP_STATE_STAGE_1;
             break;
 

@@ -7,7 +7,7 @@
 class Stage1 : public Stage
 {
     public:
-        Stage1(PT::Input* p_Inputs);
+        Stage1(PT::Window* p_Window);
         void update(float deltaTime) override;
         ~Stage1();
 

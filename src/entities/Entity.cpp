@@ -1,7 +1,7 @@
 #include "Entity.h"
 
 Entity::Entity(float x, float y, float hitboxSize)
-    : x(x), y(y), hitboxSize(hitboxSize), acceleration(0.0f), velocity(0.0f), angle(0.0f), speedCap(0.0f), frictionF(0.0f)
+    : x(x), y(y), hitboxSize(hitboxSize), acceleration(0.0f), velocity(0.0f), angle(0.0f), speedCap(0.0f), frictionF(0.0f), active(true)
 {
 
 }
@@ -33,7 +33,7 @@ void Entity::updateVertices()
 #include <iostream>
 void Entity::updatePosL(float deltaTime)
 {
-    updatePosQ(deltaTime, angle);
+    updatePosL(deltaTime, angle);
 }
 
 void Entity::updatePosL(float deltaTime, float newAngle)
@@ -63,7 +63,7 @@ void Entity::updatePosQ(float deltaTime, float newAngle)
     y += movementY;
 
     //std::cerr << "angle = " << angle << std::endl;
-    //std::cerr <<  "vel = " << velocity << ", std::abs(vel) = " << std::abs(velocity) << std::endl;
+    //std::cerr << "vel = " << velocity << ", std::abs(vel) = " << std::abs(velocity) << std::endl;
     const float friction = ρAir * frictionF * velocity * std::abs(velocity);
     velocity = std::max(std::min(velocity + acceleration * deltaTime - friction, speedCap), -speedCap);
 

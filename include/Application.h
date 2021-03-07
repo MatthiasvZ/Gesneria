@@ -23,7 +23,7 @@
 class Application
 {
     public:
-        Application(PT::Input* p_Inputs);
+        Application(PT::Window* p_Window);
 
         void update(float deltaTime);
         inline unsigned int getState() { return state; }
@@ -33,7 +33,7 @@ class Application
     protected:
 
     private:
-        PT::Input* p_Inputs;
+        PT::Window* p_Window;
         unsigned int state;
 
         Menu menu;

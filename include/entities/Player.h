@@ -7,7 +7,12 @@ class Player : public Entity
 {
     public:
         Player(float x, float y, float hitboxSize);
-        void updateVertices() override;
+
+        void updatePosL(float deltaTime) override;
+        void updatePosL(float deltaTime, float newAngle) override;
+
+        void update(float deltaTime);
+        void hit();
 
         inline float getFullSpeedCap() { return 0.5f; }
         inline float getShiftSpeedCap() { return 0.2f; }
@@ -18,7 +23,8 @@ class Player : public Entity
     protected:
 
     private:
-
+        unsigned int lives;
+        float invincibilityTimer;
 };
 
 #endif // PLAYER_H

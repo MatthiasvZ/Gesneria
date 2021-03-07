@@ -49,8 +49,8 @@
 #define PT_GREY 5
 #define PT_DARK_GREY 6
 
-#define PT_VERSION_S "0.4.90-dev"
-#define PT_VERSION   4'90 // 1.2.5 = 1'02'05
+#define PT_VERSION_S "0.4.93-dev"
+#define PT_VERSION   4'93 // 1.2.5 = 1'02'05
 
 namespace PT
 {
@@ -156,50 +156,6 @@ FUNCTION_CALL;
 FUNCTION_CALL;
 #endif // DEBUG
 
-struct Input
-{
-        bool ctrlHeld {false};
-        bool spaceHeld {false};
-        bool leftShiftHeld {false};
-        bool rightShiftHeld {false};
-        bool tabHeld {false};
-        bool qHeld {false};
-        bool wHeld {false};
-        bool eHeld {false};
-        bool rHeld {false};
-        bool aHeld {false};
-        bool sHeld {false};
-        bool dHeld {false};
-        bool fHeld {false};
-        bool yHeld {false};
-        bool xHeld {false};
-        bool cHeld {false};
-        bool vHeld {false};
-        bool downHeld {false};
-        bool leftHeld {false};
-        bool rightHeld {false};
-        bool upHeld {false};
-        bool kp1Held {false};
-        bool kp2Held {false};
-        bool kp3Held {false};
-        bool kp4Held {false};
-        bool kp5Held {false};
-        bool kp6Held {false};
-        bool kp7Held {false};
-        bool kp8Held {false};
-        bool kp9Held {false};
-        double mouseX {0.0};
-        double mouseY {0.0};
-        bool mouse1 {false};
-        bool mouse2 {false};
-        bool mouse3 {false};
-        bool mouse4 {false};
-        bool mouse5 {false};
-        bool mouse6 {false};
-        bool mouse7 {false};
-        bool mouse8 {false};
-};
-
 
 class Window
 {
@@ -207,7 +163,8 @@ class Window
         Window();
         Window(Config cfg);
         bool shouldRun() const;
-        Input* getInputs() const;
+        bool getKey(int glfwKey) const;
+        bool getMouseButton(int glfwButton) const;
         int focused() const;
         bool mouseLocked() const;
         void getCursorPos(double* p_X, double* p_Y);
@@ -248,6 +205,7 @@ class IndexBuffer
         inline unsigned int getIboID() const { return iboID; }
         inline unsigned int getCount() const { return count; }
         inline unsigned int getDataType() const { return dataType; }
+        inline const void* getDataPointer() const { return data; }
         inline void setDrawType(unsigned int drawType) { this->drawType = drawType; }
         void remove();
         ~IndexBuffer();
@@ -257,6 +215,7 @@ class IndexBuffer
         unsigned int dataType;
         long unsigned int count;
         unsigned int drawType;
+        const void* data;
 };
 
 
@@ -278,14 +237,6 @@ class VertexBuffer
         unsigned int vboID;
         unsigned int drawType;
 };
-
-
-struct SourcePackage
-{
-    std::string vertex;
-    std::string fragment;
-};
-
 
 
 struct VertexBufferElement
@@ -332,6 +283,12 @@ class VertexBufferLayout
 
 std::string readFromFile(const char* filePath);
 
+struct SourcePackage
+{
+    std::string vertex;
+    std::string fragment;
+};
+
 class Shader
 {
     public:
@@ -373,10 +330,12 @@ class VertexArray
         void bindArray() const;
         void unbindArray() const;
         void remove();
+        inline unsigned int getVBCount() const { return vbCount; }
         ~VertexArray();
 
     private:
         unsigned int vaoID;
+        unsigned int vbCount;
 };
 
 
@@ -385,7 +344,7 @@ class Texture
     public:
         Texture(const std::string& path, const unsigned int& slot, unsigned int minFilter = GL_NEAREST_MIPMAP_NEAREST, unsigned int magFilter = GL_NEAREST);
         Texture(unsigned long int bufferLength, const unsigned char* imageBuffer, const unsigned int& slot, unsigned int minFilter = GL_NEAREST_MIPMAP_NEAREST, unsigned int magFilter = GL_NEAREST);
-        ~Texture();
+        virtual ~Texture();
 
         void bindTexture(unsigned int slot = 0) const;
         void unbindTexture() const;
@@ -394,11 +353,33 @@ class Texture
         inline int getHeight() const {return height;}
         inline int getBPP() const {return bPP;}
 
-    private:
+    protected:
         unsigned int texID;
         std::string filePath;
         unsigned char* localBuffer;
         int width, height, bPP;
+};
+
+class TextureAtlas : public Texture
+{
+    public:
+        TextureAtlas(const std::string& path, const unsigned int& slot, unsigned int minFilter = GL_NEAREST_MIPMAP_NEAREST, unsigned int magFilter = GL_NEAREST);
+        TextureAtlas(unsigned long int bufferLength, const unsigned char* imageBuffer, const unsigned int& slot, unsigned int minFilter = GL_NEAREST_MIPMAP_NEAREST, unsigned int magFilter = GL_NEAREST);
+
+        inline void setIndexSize(float n) { indexSize = n; }
+
+        inline float getU1(float offset) { return offset * indexSize / width; }
+        inline float getU2(float offset) { return offset * indexSize / width; }
+        inline float getU3(float offset) { return (offset + 1) * indexSize / width; }
+        inline float getU4(float offset) { return (offset + 1) * indexSize / width; }
+
+        inline float getV1(float offset) { return offset * indexSize / height; }
+        inline float getV2(float offset) { return (offset + 1) * indexSize / height; }
+        inline float getV3(float offset) { return (offset + 1) * indexSize / height; }
+        inline float getV4(float offset) { return offset * indexSize / height; }
+
+    private:
+        float indexSize;
 };
 
 
@@ -406,7 +387,7 @@ class Camera
 {
     public:
         Camera(float x = 1.0f, float y = 1.0f, float z = 1.0f);
-        glm::mat4 update(float deltaTime, Input inputs);
+        glm::mat4 update(float deltaTime, bool (*getKey)(int glfwKey), void (*getCursorPos)(double* p_X, double* p_Y));
         inline void setClippingDistance(float s) { clippingDistance = s; }
         inline void setSpeedH(float s) { movFacH = s; }
         inline void setSpeedV(float s) { movFacV = s; }
@@ -445,6 +426,8 @@ class Camera
 void clearScreen();
 void drawVA(const VertexArray& vao, const IndexBuffer& ibo);
 void drawVA(const VertexArray& vao, const IndexBuffer& ibo, const Shader& shader);
+void drawMultiVA(const VertexArray& vao, const IndexBuffer* const* ibo);
+void drawMultiVA(const VertexArray& vao, const IndexBuffer* const* ibo, const Shader& shader);
 
 
 // AUDIO
@@ -491,14 +474,14 @@ std::vector<float> tVertsSquareXYUV(float posX, float posY, float size, bool cen
 std::vector<float> tVertsCubeXYZ(float posX, float posY, float posZ, float size, bool centred = false, bool shortened = true);
 std::vector<float> tVertsCubeXYZUV(float posX, float posY, float posZ, float size, bool centred = false, bool shortened = true);
 
-std::vector<float> xyToXyz(const std::vector<float>& vertices2d, unsigned int vertexSize, float z = 1.0f);
+std::vector<float> xyToXyz(const std::vector<float>& vertices2d, unsigned int vertexSize, float z = 0.0f);
 
 // Apparently, you can't prototype template funcs, lmao
 template <typename T>
 inline std::vector<T> tIndsTriangles(T count)
 {
     std::vector<T> result(3 * count);
-    for (int i {0}; i < count; ++i)
+    for (T i {0}; i < count; ++i)
     {
         result.push_back(0 + 3*i);
         result.push_back(1 + 3*i);
@@ -511,7 +494,7 @@ template <typename T>
 inline std::vector<T> tIndsSquares(T count)
 {
     std::vector<T> result(6 * count);
-    for (int i {0}; i < count; ++i)
+    for (T i {0}; i < count; ++i)
     {
         result.push_back(0 + 4*i);
         result.push_back(1 + 4*i);
@@ -530,7 +513,7 @@ inline std::vector<T> tIndsCubes(T count, bool shortened = true)
     if (shortened)
     {
         std::vector<T> result(36 * count);
-        for (int i {0}; i < count; ++i)
+        for (T i {0}; i < count; ++i)
         {
             result.push_back(0 + 8*i);
             result.push_back(1 + 8*i);
@@ -597,7 +580,7 @@ inline std::vector<T> tIndsTexturedCubes(T count, bool shortened = true)
     if (shortened)
     {
         std::vector<T> result(36 * count);
-        for (int i {0}; i < count; ++i)
+        for (T i {0}; i < count; ++i)
         {
             result.push_back(0 + 12*i);
             result.push_back(1 + 12*i);

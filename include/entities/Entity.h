@@ -10,16 +10,17 @@ class Entity
     public:
         Entity(float x, float y, float hitboxSize);
 
-        inline float getX() { return x; }
-        inline float getY() { return y; }
-        inline float getHitboxSize() { return hitboxSize; }
+        inline float getX() const { return x; }
+        inline float getY() const { return y; }
+        inline float getHitboxSize() const { return hitboxSize; }
         inline std::vector<float>* getVertices() { return &vertices; }
-        inline bool isTouching(Entity b) { return abs(this->x - b.getX()) + abs(this->y - b.getY()) < this->hitboxSize + b.getHitboxSize(); }
+        inline float distanceTo(Entity b) const { return sqrt(pow(this->x - b.getX(), 2) + pow(this->y - b.getY(), 2)); }
+        inline bool isTouching(Entity b) const { return distanceTo(b) < this->hitboxSize + b.getHitboxSize(); }
 
         void moveTo(float x, float y);
         void moveRelative(float x, float y);
-        void updatePosL(float deltaTime);
-        void updatePosL(float deltaTime, float newAngle);
+        virtual void updatePosL(float deltaTime);
+        virtual void updatePosL(float deltaTime, float newAngle);
         void updatePosQ(float deltaTime);
         void updatePosQ(float deltaTime, float newAngle);
 
@@ -27,6 +28,8 @@ class Entity
         inline void setVelocity(float velocity) { this->velocity = velocity; }
         inline void setAngle(float angle) { this->angle = angle; }
         inline void setSpeedCap(float speedCap) { this->speedCap = speedCap; }
+
+        inline bool isActive() const { return active; }
 
     protected:
         float x;
@@ -40,6 +43,8 @@ class Entity
         constexpr static float ρAir = 1.0f;
         std::vector<float> vertices;
         virtual void updateVertices();
+
+        bool active;
 
     private:
 };

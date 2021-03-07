@@ -14,7 +14,7 @@
 class Menu
 {
     public:
-        Menu(PT::Input* p_Inputs);
+        Menu(PT::Window* p_Window);
 
         void update(float deltaTime);
         inline unsigned int getState() { return state; }
@@ -32,7 +32,7 @@ class Menu
         PT::VertexBuffer backgroundVbo;
         PT::IndexBuffer backgroundIbo;
         PT::VertexArray backgroundVao;
-        PT::Input* p_Inputs;
+        PT::Window* p_Window;
 
         PT::Texture tex_menuAtlas;
         PT::Texture tex_menuBackground;

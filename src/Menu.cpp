@@ -3,7 +3,6 @@
 #include <glm/gtx/transform.hpp>
 
 #include "../assets/menu/menuAtlas.png.h"
-#include "../assets/menu/menuBackground.png.h"
 
 #define TOTAL_SELECTIONS 3
 #define SELECTION_NONE      0
@@ -112,7 +111,7 @@ inline std::vector<float> vertexPositions(float aspectRatio)
 #define MENU_BACKGROUND MENU_ATLAS
 
 
-Menu::Menu(PT::Input* p_Inputs)
+Menu::Menu(PT::Window* p_Window)
     : shader(PT_SHADER_XYUV_M),
       vertices(vertexPositions(1.0f)), vbo(vertices), ibo(PT::tIndsSquares<unsigned char>(vertices.size() / 8)),
       backgroundVbo(std::vector<float>({
@@ -120,7 +119,7 @@ Menu::Menu(PT::Input* p_Inputs)
         -2.0f,  1.0f, 0.0f, 1.0f,
          2.0f,  1.0f, 1.0f, 1.0f,
          2.0f, -1.0f, 1.0f, 0.0f
-      })), backgroundIbo(PT::tIndsSquares<unsigned char>(1)), p_Inputs(p_Inputs),
+      })), backgroundIbo(PT::tIndsSquares<unsigned char>(1)), p_Window(p_Window),
       tex_menuAtlas(MENU_ATLAS_LENGTH, MENU_ATLAS, 0, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR), tex_menuBackground(MENU_BACKGROUND_LENGTH, MENU_BACKGROUND, 1),
       aspectRatio(1.0f), state(MAIN_SCREEN), nextState(NONE), deltaTime(0.0f), animationPlaying(false)
 
@@ -165,7 +164,7 @@ void Menu::update(float deltaTime)
                     {
                         case SELECTION_PLAY_GAME:
                             animation_Highlight(SELECTION_PLAY_GAME);
-                            if (p_Inputs->mouse1 == true)
+                            if (p_Window->getMouseButton(GLFW_MOUSE_BUTTON_1) == true)
                             {
                                 nextState = WAITING_TO_BEGIN_GAME;
                                 animation_MoveOffscreen();
@@ -173,7 +172,7 @@ void Menu::update(float deltaTime)
                             break;
                         case SELECTION_OPTIONS:
                             animation_Highlight(SELECTION_OPTIONS);
-                            if (p_Inputs->mouse1 == true)
+                            if (p_Window->getMouseButton(GLFW_MOUSE_BUTTON_1) == true)
                             {
                                 nextState = OPTION_MENU;
                                 animation_MoveOffscreen();
@@ -181,7 +180,7 @@ void Menu::update(float deltaTime)
                             break;
                         case SELECTION_QUIT_GAME:
                             animation_Highlight(SELECTION_QUIT_GAME);
-                            if (p_Inputs->mouse1 == true)
+                            if (p_Window->getMouseButton(GLFW_MOUSE_BUTTON_1) == true)
                                 state = WAITING_TO_CLOSE;
                             break;
                     }
@@ -204,7 +203,7 @@ void Menu::update(float deltaTime)
     }
 
     shader.setUniform1i("texSlot", 1);
-    //PT::drawVA(backgroundVao, backgroundIbo, shader);
+    // PT::drawVA(backgroundVao, backgroundIbo, shader);
     shader.setUniform1i("texSlot", 0);
     PT::drawVA(vao, ibo, shader);
 }
@@ -214,8 +213,10 @@ unsigned int Menu::mouseOn()
     if (animationPlaying)
         return SELECTION_NONE;
 
-    double cursorX {(p_Inputs->mouseX / vp[2]  * 2 - 1) * aspectRatio};
-    double cursorY {(-p_Inputs->mouseY / vp[3]  * 2 + 1)};
+    double mouseX, mouseY;
+    p_Window->getCursorPos(&mouseX, &mouseY);
+    double cursorX {(mouseX / vp[2]  * 2 - 1) * aspectRatio};
+    double cursorY {(-mouseY / vp[3]  * 2 + 1)};
 
     for (unsigned int selection {1}; selection <= TOTAL_SELECTIONS; ++selection)
         if (cursorX > MAIN_SELECTIONS_CURRENT_LEFT_X && cursorX < MAIN_SELECTIONS_CURRENT_RIGHT_X &&
@@ -288,10 +289,10 @@ void Menu::animation_Highlight(unsigned int option)
 
 void Menu::animation_UnHighlight(unsigned int option)
 {
-    if (ActiveHighlight != option)
+    if (ActiveHighlight != option || !ActiveHighlight)
         return;
 
-    vertices[16 * (option - 1)  + 0]  += HIGHLIGHT_AMOUNT;
+    vertices[16 * (option - 1)  + 0] += HIGHLIGHT_AMOUNT;
     vertices[16 * (option - 1)  + 1]  += HIGHLIGHT_AMOUNT;
     vertices[16 * (option - 1)  + 4]  += HIGHLIGHT_AMOUNT;
     vertices[16 * (option - 1)  + 5]  -= HIGHLIGHT_AMOUNT;
